@@ -1,0 +1,73 @@
+environment:
+  host:
+    os: 'windows'
+    flavor: 'server'
+    version: '2016' 
+  runtime:
+    provider: 'appcontainer'
+   
+    image: 'cdpxwin.azurecr.io/legacy/global/vse2017u5-external-azsdk-ext-win14393.1884:1.1-node10'
+    source_mode: 'map'
+
+workspace_options:                  
+  force_workspace_wipe: true
+  enable_git_long_paths: true
+  download_current_artifacts: false
+  show_global_sub_tasks: true
+  show_user_sub_tasks: true
+  enable_legacy_networking: true
+
+  
+restore:
+  commands:
+    - !!defaultcommand
+      name: 'NPM Install'
+      command: 'project_folder/npm-install.cmd'
+
+
+#      artifacts:
+#        -from: './'
+#          to: 'logs'
+build:
+  commands:
+    - !!buildcommand  
+      name: 'Build NodeJS Application'
+      command: 'fetcher/npm-run.cmd'
+      artifacts:
+#        - from: 'C:\Users\ContainerAdministrator\AppData\Roaming\npm-cache\_logs\'
+#          to: 'artifact_error_log'
+#         include:
+#           - '*debug.log'
+        - from: 'project_folder/dist'
+          to: 'artifact_dist'
+          include:
+           - '**/*'
+        - from: 'project_folder/public'
+          to: 'artifact_public'
+          include:
+           - '**/*'
+        - from: 'project_folder/views'
+          to: 'artifact_views'
+          include:
+           - '**/*'
+        - from: 'project_folder/package.json'
+          include:
+           - '**/*'
+        - from: 'project_folder/package-lock.json'
+          include:
+           - '**/*'
+        - from: 'project_folder/README.md'
+          include:
+           - '**/*'
+   
+#restore:
+#  commands: 
+
+#package:
+#  commands:
+  
+#test:
+#  commands:
+  
+#user_cleanup:
+#  commands:
